@@ -1,27 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://dqr7w8mxq3ofs"]
+[gd_scene format=3 uid="uid://dqr7w8mxq3ofs"]
 
-[ext_resource type="Script" path="res://scripts/card_ui.gd" id="1_card_ui"]
+[ext_resource type="Script" uid="uid://ndgjktelrcjn" path="res://scripts/card_ui.gd" id="1_card_ui"]
+[ext_resource type="Texture2D" uid="uid://dp1tuywgjbw3r" path="res://assets/Card.png" id="2_e1hm3"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
-bg_color = Color(0.2, 0.2, 0.25, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.4, 0.4, 0.5, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_birkm"]
+texture = ExtResource("2_e1hm3")
 
-[node name="CardUI" type="Control"]
+[node name="CardUI" type="Control" unique_id=298370084]
 custom_minimum_size = Vector2(140, 180)
 layout_mode = 3
 anchors_preset = 0
-mouse_filter = 0
 script = ExtResource("1_card_ui")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=267663262]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,9 +20,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_1")
+theme_override_styles/panel = SubResource("StyleBoxTexture_birkm")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=1129499309]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,37 +32,37 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_constants/separation = 5
 
-[node name="Spacer1" type="Control" parent="Panel/VBoxContainer"]
+[node name="Spacer1" type="Control" parent="Panel/VBoxContainer" unique_id=357748005]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="CardName" type="Label" parent="Panel/VBoxContainer"]
+[node name="CardName" type="Label" parent="Panel/VBoxContainer" unique_id=74077990]
 layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 14
 text = "Card Name"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="Separator" type="HSeparator" parent="Panel/VBoxContainer"]
+[node name="Separator" type="HSeparator" parent="Panel/VBoxContainer" unique_id=2012520316]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Description" type="Label" parent="Panel/VBoxContainer"]
+[node name="Description" type="Label" parent="Panel/VBoxContainer" unique_id=1083951853]
 layout_mode = 2
 size_flags_vertical = 3
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
 theme_override_font_sizes/font_size = 11
 text = "Card description goes here"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="Spacer2" type="Control" parent="Panel/VBoxContainer"]
+[node name="Spacer2" type="Control" parent="Panel/VBoxContainer" unique_id=1485347886]
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 mouse_filter = 2
