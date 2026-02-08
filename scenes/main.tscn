@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://bj0mwiqcnvfaj" path="res://scenes/chess_board.tscn" id="1_8n1hx"]
 [ext_resource type="Script" uid="uid://34gptkdsdc12" path="res://scripts/main.gd" id="1_j7u4d"]
 [ext_resource type="PackedScene" uid="uid://c5vn3wxqjr3mu" path="res://scenes/hand_display.tscn" id="3_hand"]
+[ext_resource type="PackedScene" uid="uid://bqn8x7yvx8gmc" path="res://scenes/network_status_overlay.tscn" id="4_network"]
 
 [node name="Main" type="Control" unique_id=1692437004]
 layout_mode = 3
@@ -80,3 +81,6 @@ theme_override_font_sizes/font_size = 16
 text = "Your Hand:"
 
 [node name="HandDisplay" parent="VBoxContainer/BottomArea/MarginContainer/VBoxContainer" unique_id=618994022 instance=ExtResource("3_hand")]
+
+[node name="NetworkStatusOverlay" parent="." instance=ExtResource("4_network")]
+

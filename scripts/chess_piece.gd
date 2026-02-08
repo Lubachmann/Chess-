@@ -1,6 +1,9 @@
 class_name ChessPiece
 extends Node2D
 
+# Debug flag - set to false to disable debug prints
+const DEBUG_MODE = false
+
 enum PieceType { PAWN, ROOK, KNIGHT, BISHOP, QUEEN, KING }
 enum PieceColor { WHITE, BLACK }
 
@@ -11,6 +14,10 @@ var has_moved: bool = false
 
 # Modifiers applied by cards
 var active_modifiers: Array[PieceModifier] = []
+
+# En passant target (passed from board)
+const INVALID_POSITION = Vector2i(-1, -1)
+var en_passant_target: Vector2i = INVALID_POSITION
 
 # Node references
 @onready var sprite: Sprite2D = $Sprite2D
@@ -52,7 +59,8 @@ func update_sprite():
 			label.visible = false  # Hide label if sprite exists
 	else:
 		# Use label as fallback if sprite not found
-		print("Warning: Could not find sprite at path: ", sprite_path)
+		if DEBUG_MODE:
+			print("Warning: Could not find sprite at path: ", sprite_path)
 		if label:
 			label.visible = true
 
@@ -76,8 +84,9 @@ func get_piece_letter() -> String:
 		PieceType.KING: return "K"
 		_: return "?"
 
-func get_possible_moves(board_state: Array) -> Array[Vector2i]:
+func get_possible_moves(board_state: Array, en_passant_pos: Vector2i = INVALID_POSITION) -> Array[Vector2i]:
 	var moves: Array[Vector2i] = []
+	en_passant_target = en_passant_pos  # Store for use in pawn moves
 	
 	match piece_type:
 		PieceType.PAWN:
@@ -101,12 +110,14 @@ func get_possible_moves(board_state: Array) -> Array[Vector2i]:
 
 func add_modifier(modifier: PieceModifier):
 	active_modifiers.append(modifier)
-	print("Modifier added to piece at %s: %s (duration: %d)" % [board_position, modifier.modifier_id, modifier.duration])
+	if DEBUG_MODE:
+		print("Modifier added to piece at %s: %s (duration: %d)" % [board_position, modifier.modifier_id, modifier.duration])
 	update_visual_effects()
 
 func remove_modifier(modifier: PieceModifier):
 	active_modifiers.erase(modifier)
-	print("Modifier removed from piece at %s: %s" % [board_position, modifier.modifier_id])
+	if DEBUG_MODE:
+		print("Modifier removed from piece at %s: %s" % [board_position, modifier.modifier_id])
 	update_visual_effects()
 
 func tick_modifiers():
@@ -114,7 +125,8 @@ func tick_modifiers():
 	for modifier in active_modifiers.duplicate():
 		modifier.tick_duration()
 		if modifier.is_expired():
-			print("Modifier expired on piece at %s: %s" % [board_position, modifier.modifier_id])
+			if DEBUG_MODE:
+				print("Modifier expired on piece at %s: %s" % [board_position, modifier.modifier_id])
 			remove_modifier(modifier)
 
 func has_modifier(modifier_id: String) -> bool:
@@ -153,6 +165,9 @@ func get_pawn_moves(board_state: Array) -> Array[Vector2i]:
 		if is_valid_position(capture_pos):
 			var target = board_state[capture_pos.y][capture_pos.x]
 			if target != null and target.piece_color != piece_color:
+				moves.append(capture_pos)
+			# Check for en passant
+			elif capture_pos == en_passant_target:
 				moves.append(capture_pos)
 	
 	return moves
@@ -211,7 +226,41 @@ func get_king_moves(board_state: Array) -> Array[Vector2i]:
 			if target == null or target.piece_color != piece_color:
 				moves.append(target_pos)
 	
-	# TODO: Add castling logic
+	# Castling logic
+	if not has_moved:
+		var row = board_position.y
+		
+		# Kingside castling (O-O)
+		var kingside_rook_pos = Vector2i(7, row)
+		if is_valid_position(kingside_rook_pos):
+			var kingside_rook = board_state[kingside_rook_pos.y][kingside_rook_pos.x]
+			if kingside_rook != null and kingside_rook.piece_type == PieceType.ROOK and \
+			   kingside_rook.piece_color == piece_color and not kingside_rook.has_moved:
+				# Check if squares between king and rook are empty
+				var squares_clear = true
+				for x in range(board_position.x + 1, 7):
+					if board_state[row][x] != null:
+						squares_clear = false
+						break
+				if squares_clear:
+					# Add castling move (king moves 2 squares toward rook)
+					moves.append(Vector2i(board_position.x + 2, row))
+		
+		# Queenside castling (O-O-O)
+		var queenside_rook_pos = Vector2i(0, row)
+		if is_valid_position(queenside_rook_pos):
+			var queenside_rook = board_state[queenside_rook_pos.y][queenside_rook_pos.x]
+			if queenside_rook != null and queenside_rook.piece_type == PieceType.ROOK and \
+			   queenside_rook.piece_color == piece_color and not queenside_rook.has_moved:
+				# Check if squares between king and rook are empty
+				var squares_clear = true
+				for x in range(1, board_position.x):
+					if board_state[row][x] != null:
+						squares_clear = false
+						break
+				if squares_clear:
+					# Add castling move (king moves 2 squares toward rook)
+					moves.append(Vector2i(board_position.x - 2, row))
 	
 	return moves
 
@@ -234,4 +283,5 @@ func get_line_moves(board_state: Array, direction: Vector2i) -> Array[Vector2i]:
 	return moves
 
 func is_valid_position(pos: Vector2i) -> bool:
-	return pos.x >= 0 and pos.x < 8 and pos.y >= 0 and pos.y < 8
+	const BOARD_SIZE = 8  # Reference the constant
+	return pos.x >= 0 and pos.x < BOARD_SIZE and pos.y >= 0 and pos.y < BOARD_SIZE

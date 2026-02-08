@@ -11,9 +11,14 @@ config_version=5
 [application]
 
 config/name="Chess++"
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="res://scenes/multiplayer_menu.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+NetworkManager="*res://scripts/network_manager.gd"
+SceneManager="*res://scripts/scene_manager.gd"
 
 [display]
 
