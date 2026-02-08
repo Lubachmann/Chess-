@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://c5vn3wxqjr3mu"]
+
+[ext_resource type="Script" path="res://scripts/hand_display.gd" id="1_hand"]
+
+[node name="HandDisplay" type="HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_constants/separation = 10
+alignment = 1
+script = ExtResource("1_hand")

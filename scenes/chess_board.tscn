@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bj0mwiqcnvfaj"]
+
+[ext_resource type="Script" path="res://scripts/chess_board.gd" id="1_dy5wu"]
+
+[node name="ChessBoard" type="Control"]
+custom_minimum_size = Vector2(960, 960)
+layout_mode = 2
+mouse_filter = 0
+script = ExtResource("1_dy5wu")
+
+[node name="BoardContainer" type="Node2D" parent="."]
